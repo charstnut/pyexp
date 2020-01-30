@@ -4,25 +4,6 @@ import numpy as np
 # Integration and finding derivatives are given by scipy.integrate... and scipy.misc.derivative
 
 
-def chi_sq(difference, std_error, dof, reduce=True):
-    '''
-	Calculate chi^2 or reduced chi^2 value over a variable
-	(diff = data-fit)
-
-	inputs:
-	difference, std_error, dof, reduce=True
-
-	returns:
-	chi_2/red_chi_2
-	'''
-    chi_2 = sum((difference / std_error)**2)
-    red_chi_2 = chi_2 / (len(difference) - dof)
-
-    if reduce:
-        return red_chi_2
-    return chi_2
-
-
 def cluster(pts, eps):
     '''
     Given a bunch of points, for example, with coordinates (x, y, z); and given a limit radius of clustering;
