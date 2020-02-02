@@ -1,37 +1,40 @@
 import numpy as np
+import uncertainties as unc
+import uncertainties.unumpy as unp
 
 
-def mean_meas(measurements, precision):
-    '''
-	Calculate mean and combined error of several measurements with equal precision
-	(e.g. Taking the same measurement several times)
+def weighted_avg(meas, error=None, prec=None):
+    """Returns the weighted average of the measurement. There are two cases: 
+	When calculating human read measurements, the standard deviation plus device precision are independent sources of error.
+	When assuming errors are truly gaussian, apply the stantard weighted average.
+	
+	Arguments:
+		meas {np array} -- Input measurements
+	
+	Keyword Arguments:
+		error {np array} -- gaussian error (default: {None})
+		prec {double} -- device precision (e.g. 0.1 cm) (default: {None})
+	
+	Returns:
+		uncertainty ufloat -- average and combined error
+	"""
 
-	inputs:
-	measurements, precision
+    # Init prec to 0 if None
+    if prec is None:
+        prec = 0
 
-	returns:
-	mean, ce
-	'''
-    mean = np.mean(measurements)
-    std = np.std(measurements, ddof=1)
-    ce = np.sqrt(std**2 / len(measurements) + precision**2)
+    # Stat error (random error)
+    std = np.std(meas, ddof=1)
 
-    return mean, ce
+    if error is None:
+        mean = np.average(meas)  # As in case of calculating human-read meas
+        combined_error = np.sqrt(std**2 / len(meas) + prec**2)
+    else:
+        # Assuming errors are truly gaussian
+        w = 1. / error**2
+        mean = np.average(meas, weights=w)
+        combined_error = np.sqrt(1. / np.sum(w))
 
+    average = unc.ufloat(mean, combined_error)
 
-def wt_avg(data, error, precision):
-    '''
-	Calculate combined means with different uncertainties (error is std)
-
-	inputs:
-	data, error, precision
-
-	returns:
-	data_bar, error_bar
-	'''
-    weight = 1 / (error**2)
-    data_bar = sum(weight * data) / sum(weight)
-    se = 1 / np.sqrt(sum(weight))
-    error_bar = np.sqrt(se**2 + precision**2)
-
-    return data_bar, error_bar
+    return average

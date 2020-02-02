@@ -1,12 +1,14 @@
 # pyexp
 This is a utility repo for data processing in python.
 
-Common processing functions, such as calculating weighted averages, error propagation with `SymPy`, etc., should be implemented in separate utility files (modules). A list of files and their purposes are as following:
+Common processing functions, such as calculating weighted averages, error propagation with `uncertainties`, etc., should be implemented in separate utility files (modules). A list of files and their purposes are as following:
 
 - `misc.py`
     - Other functions (e.g. self-implemented clustering)
 - `avg.py`
     - Averaging related functions
+- `fastfit.py`
+    - Fast fitting a model of choice (note: this is essentially a wrapper around scipy.optimize package)
 
 # Usage
 Add the repo path to `PYTHONPATH` at the beginning of the script, and import as needed.
