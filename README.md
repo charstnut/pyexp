@@ -8,7 +8,9 @@ Common processing functions, such as calculating weighted averages, error propag
 - `avg.py`
     - Averaging related functions
 - `fastfit.py`
-    - Fast fitting a model of choice (note: this is essentially a wrapper around scipy.optimize package)
+    - Fast fitting a model of choice (note: this is essentially a wrapper around scipy.optimize package) for non-histogram fits
+    - A skeleton for histogram fits (binned and unbinned likelihood fits with proper error analysis and $\chi^2$ test)
+    - (If possible) Abstraction for MCMC utilities and framework
 
 # Usage
 Add the repo path to `PYTHONPATH` at the beginning of the script, and import as needed.

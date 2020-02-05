@@ -1,8 +1,9 @@
+import warnings
 import numpy as np
 import scipy as sp
 import uncertainties as unc
 import uncertainties.unumpy as unp
-from scipy import optimize
+from scipy import optimize, stats, integrate
 
 # TODO: Change this into a class-based method
 
@@ -43,13 +44,36 @@ def fit(model,
     return pars_opt, x_fit, y_fit, resid
 
 
-def chi_sq(x_data, y_data, y_err, model, popt, reduce=True):
+def chi_sq(x_data, y_data, y_err, model, popt):
     # Calculate chi_sq according to fit results
     difference = y_data - model(x_data, *popt)
 
     chi_2 = np.sum((difference / y_err)**2)
-    red_chi_2 = chi_2 / (len(difference) - len(popt))
+    dof = len(difference) - len(popt)
 
-    if reduce:
-        return red_chi_2
-    return chi_2
+    p_val = 1 - sp.stats.chi2.cdf(chi_2, df=dof)
+
+    return chi_2, p_val
+
+
+def chi_sq_hypotest(bins, counts, model, popt):
+    # Perform a chi-squared test on binned distributions, and returns
+    # by default.
+    # Note: model should output counts (norm * total counts) so that it can be directly integrated. Has to be continuous!
+    # Note: counts should be greater than 5!
+    if np.any(counts < 5):
+        warnings.warn("Some counts are smaller than 5, consider rebinning!")
+    assert len(bins) == len(counts) - 1
+
+    expected_cnts = []
+    f = lambda x: model(x, *popt)
+
+    expected_cnts.append(sp.integrate.quad(f, -np.inf, bins[0]))
+    for i in range(bins):
+        expected_cnts.append(sp.integrate.quad(f, bins[i], bins[i + 1]))
+    expected_cnts.append(sp.integrate.quad(f, bins[-1], np.inf))
+    expected_cnts = np.asarray_chkfinite(expected_cnts)
+
+    dof = len(counts) - len(popt)
+
+    return sp.stats.chisquare(counts, expected_cnts, ddof=dof)
