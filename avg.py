@@ -3,7 +3,7 @@ import uncertainties as unc
 import uncertainties.unumpy as unp
 
 
-def weighted_avg(meas, error=None, prec=None):
+def weighted_avg(meas, error=None, prec=None, axis=None):
     """Returns the weighted average of the measurement. There are two cases: 
 	When calculating human read measurements, the standard deviation plus device precision are independent sources of error.
 	When assuming errors are truly gaussian, apply the stantard weighted average.
@@ -16,7 +16,7 @@ def weighted_avg(meas, error=None, prec=None):
 		prec {double} -- device precision (e.g. 0.1 cm) (default: {None})
 	
 	Returns:
-		uncertainty ufloat -- average and combined error
+		uncertainty array -- average and combined error
 	"""
 
     # Init prec to 0 if None
@@ -24,17 +24,23 @@ def weighted_avg(meas, error=None, prec=None):
         prec = 0
 
     # Stat error (random error)
-    std = np.std(meas, ddof=1)
+    std = np.std(meas, ddof=1, axis=axis)
+
+    if axis is None:
+        N = len(meas.flatten())
+    else:
+        N = meas.shape[axis]
 
     if error is None:
-        mean = np.average(meas)  # As in case of calculating human-read meas
-        combined_error = np.sqrt(std**2 / len(meas) + prec**2)
+        # As in case of calculating human-read meas
+        mean = np.average(meas, axis=axis)
+        combined_error = np.sqrt(std**2 / N + prec**2)
     else:
         # Assuming errors are truly gaussian
         w = 1. / error**2
-        mean = np.average(meas, weights=w)
-        combined_error = np.sqrt(1. / np.sum(w))
+        mean = np.average(meas, weights=w, axis=axis)
+        combined_error = np.sqrt(1. / np.sum(w, axis=axis))
 
-    average = unc.ufloat(mean, combined_error)
+    average = unp.uarray(mean, combined_error)
 
     return average
