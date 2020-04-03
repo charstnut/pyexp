@@ -13,6 +13,7 @@ def fit(model,
         x_data,
         y_data,
         y_err=None,
+        pars_init=None,
         x_fit_samples=1000,
         fit_kws=None):
     # Simple fit utility, prints output and returns popt as uncertainties array along with simulation and normalized residuals
@@ -23,7 +24,10 @@ def fit(model,
         fit_kws = dict(absolute_sigma=True)
 
     # Perform fitting
-    par0 = np.ones(len(pars_list))  # initial guesses
+    if pars_init is not None:
+        par0 = pars_init  # initial guesses
+    else:
+        par0 = np.ones(len(pars_list))
     popt, pcov = sp.optimize.curve_fit(model,
                                        x_data,
                                        y_data,
