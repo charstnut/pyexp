@@ -5,7 +5,7 @@ import uncertainties as unc
 import uncertainties.unumpy as unp
 from scipy import optimize, stats, integrate
 
-# TODO: Change this into a class-based method
+# FIXME: Change this into a class-based method
 
 
 def fit(model,
@@ -16,7 +16,8 @@ def fit(model,
         pars_init=None,
         x_fit_samples=1000,
         fit_kws=None):
-    # Simple fit utility, prints output and returns popt as uncertainties array along with simulation and normalized residuals
+    # Simple fit utility, prints output and returns popt
+    # as uncertainties array along with simulation and normalized residuals
 
     if y_err is None:
         y_err = np.ones(y_data)

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use("Qt5Agg")
 
-import iminuit, probfit
+# import iminuit, probfit
 import scipy.stats
 
 # %%
