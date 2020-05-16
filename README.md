@@ -1,6 +1,4 @@
 # pyexp
-This is a utility repo for data processing in python.
-
 Common processing functions, such as calculating weighted averages, error propagation with `uncertainties`, etc., should be implemented in separate utility files (modules). A list of files and their purposes are as following:
 
 - `misc.py`
@@ -13,15 +11,22 @@ Common processing functions, such as calculating weighted averages, error propag
     - (If possible) Abstraction for MCMC utilities and framework
 
 # Usage
-Add the repo path to `PYTHONPATH` at the beginning of the script, and import as needed.
+Execute the module functions from python using the top-level 
+pacakge:
+
+```shell
+python -m pyexp.avg
+```
+
+Or import the package:
 
 ```Python
 import sys, os
 # add other folders so libs can be imported
-pyexp_dir = '/path/to/repo'
-sys.path.append(root_dir)
+pyexp_dir = '/path/to/this/repo'
+sys.path.append(pyexp_dir)
 
-import avg
+import pyexp.avg as avg
 avg.function()
 ```
 
