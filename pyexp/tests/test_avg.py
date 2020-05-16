@@ -1,15 +1,9 @@
-import os
-import sys
-sys.path.insert(0,
-                os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-import pytest
-
-import avg
-
 import numpy as np
+import pytest
 import uncertainties as unc
 import uncertainties.unumpy as unp
+
+import pyexp.avg as avg
 
 
 def test_avg():
